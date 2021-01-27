@@ -27,24 +27,16 @@ jobSelector.addEventListener('change', (e) => {
 //Disable color selector
 shirtColorSelector.disabled = true;
 
+
+// Display shirt colors based upon selection
 shirtDesignSelector.addEventListener('change', (e) => {
     e.preventDefault();
-    const designSelected = e.target;
-    const selectedValue = designSelected.value;
     shirtColorSelector.disabled = false;
-    if (selectedValue === 'js puns') {
-        for (let i = 0; i < shirtColorOptions.length; i++) {
-            let colorOptionTheme = shirtColorOptions[i].getAttribute('data-theme');
-            if (colorOptionTheme === 'heart js') {
-                shirtColorOptions[i].setAttribute'(hidden, '');
-            };
-        };
-    } else if (selectedValue === 'heart js') {
-        for (let i = 0; i < shirtColorOptions.length; i++) {
-            let colorOptionTheme = shirtColorOptions[i].getAttribute('data-theme');
-            if (colorOptionTheme === 'js puns') {
-                shirtColorOptions[i].setAttribute(hidden, '');
-            };
-        };
-    };
+    for (let i = 0; i < shirtColorOptions.length; i++) {
+        if(shirtColorOptions[i].getAttribute('data-theme') !== e.target.value){
+            shirtColorOptions[i].style.display = 'none';
+        } else {
+            shirtColorOptions[i].style.display = '';
+        }
+    }; 
 })
