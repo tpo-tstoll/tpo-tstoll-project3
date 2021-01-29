@@ -69,13 +69,15 @@ const activityScheduleVerification = () => {
     activities.addEventListener('change', (e) => {
         for (i = 0; i < activityOptions.length; i++) {
             let selectionTime = e.target.getAttribute('data-day-and-time');
-            activityOptions[i].disabled = false;
             if (selectionTime === activityOptions[i].getAttribute('data-day-and-time') && e.target.checked) {
                 activityOptions[i].disabled = true;
-                e.target.disabled = false;
-            } else {
-                activityOptions[i].disabled = false;  
+                if (activityOptions[i].checked) {
+                activityOptions[i].disabled = true;
+                }; 
+            } else if (selectionTime === activityOptions[i].getAttribute('data-day-and-time') && e.target.checked != true) {
+                activityOptions[i].disabled = false;
             };
+            e.target.disabled = false;
         };
     });
 }
@@ -123,11 +125,11 @@ const formSubmitValidation =() => {
     const activityHint = document.getElementById('activities-hint');
     form[0].addEventListener('submit', (e) => {
         let nameValue = nameInput.value;
-        const nameRegEx = /[(.|\s)*\S(.|\s)]/.test(nameValue); 
+        const nameRegEx = /[^\s]/.test(nameValue); 
         let emailValue = emailInput.value;
         const emailRegEx = /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailValue);
         let cardNumberValue = cardNumberInput.value;
-        const cardNumberRegEx = /^[0-9]{13}(?:[0-9]{3})?$/.test(cardNumberValue);
+        const cardNumberRegEx = /^[0-9]{13}(?:[0-9]{1,3})?$/.test(cardNumberValue);
         let zipCodeValue = zipCodeInput.value;
         const zipCodeRegEx = /^[0-9]{5}$/.test(zipCodeValue);
         let cvvValue = cvvInput.value;
@@ -178,7 +180,8 @@ const formSubmitValidation =() => {
 //The formKeyUpValidation dynamically tests the users input in the name field to provide real time verification the input is formatted correctly
 const formKeyUpValidation =() => {
     nameInput.addEventListener('keyup', (e) => { 
-        if (nameInput.value != '') {
+    const nameRegEx = /[^\s]/.test(nameInput.value); 
+        if (nameRegEx) {
             nameInput.parentElement.classList.remove('not-valid');
             nameInput.parentElement.className = 'valid';
             nameInput.parentElement.lastElementChild.style.display = 'none';
