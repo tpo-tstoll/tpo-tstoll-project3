@@ -6,6 +6,7 @@ const jobSelector = document.getElementById('title');
 const shirtDesignSelector = document.getElementById('design');
 const shirtColorSelector = document.getElementById('color');
 const shirtColorOptions = shirtColorSelector.children;
+const activities = document.getElementById('activities');
 
 //Set focus to name input 
 nameInput.focus();
@@ -43,10 +44,9 @@ shirtDesignSelector.addEventListener('change', (e) => {
 })
 
 //Daily Activity Cost
+let userCart = 0;
 
 const activitySelection = () => {
-    const activities = document.getElementById('activities');
-    let userCart = 0;
     activities.addEventListener('change', (e) => {
         let totalCost = document.getElementById('activities-cost');
         let selectionCost = parseInt(e.target.getAttribute('data-cost'));
@@ -59,10 +59,11 @@ const activitySelection = () => {
     })
 }
 
+const creditCard = document.getElementById('credit-card');
+
 //Payment info
 const paymentSelector = () => {
     const paymentMethod = document.getElementById('payment');
-    const creditCard = document.getElementById('credit-card');
     const paypal = document.getElementById('paypal');
     const bitcoin = document.getElementById('bitcoin');
     paypal.hidden = true;
@@ -87,6 +88,77 @@ const paymentSelector = () => {
 }
 
 
+//Test validation function
+
+
+
+//Form validation
+const formValidation =() => {
+    const emailInput = document.getElementById('email');
+    const cardNumberInput = document.getElementById('cc-num');
+    const zipCodeInput = document.getElementById('zip');
+    const cvvInput = document.getElementById('cvv');
+    const form = document.getElementsByTagName('form');
+    const activityHint = document.getElementById('activities-hint');
+    form[0].addEventListener('submit', (e) => {
+        const testForm = (value, test, input) => {
+            if (test != true) {
+                e.preventDefault();
+                input.parentElement.classList.remove('valid');
+                input.parentElement.className = 'not-valid';
+                input.parentElement.lastElementChild.style.display = 'block';
+            } else {
+                input.parentElement.classList.remove('not-valid');
+                input.parentElement.className = 'valid';
+                input.parentElement.lastElementChild.style.display = 'none';
+            }
+        };
+        let nameValue = nameInput.value;
+        const nameRegEx = /[(.|\s)*\S(.|\s)]/.test(nameValue); 
+        let emailValue = emailInput.value;
+        const emailRegEx = /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailValue);
+        let cardNumberValue = cardNumberInput.value;
+        const cardNumberRegEx = /^[0-9]{13}(?:[0-9]{3})?$/.test(cardNumberValue);
+        let zipCodeValue = zipCodeInput.value;
+        const zipCodeRegEx = /^[0-9]{5}$/.test(zipCodeValue);
+        let cvvValue = cvvInput.value;
+        const cvvRegEx = /^[0-9]{3}$/.test(cvvValue);
+        testForm(nameValue, nameRegEx, nameInput);
+        testForm(emailValue, emailRegEx, emailInput);
+        if (creditCard.hidden != true) {
+            testForm(cardNumberValue, cardNumberRegEx, cardNumberInput);
+            testForm(zipCodeValue, zipCodeRegEx, zipCodeInput);
+            testForm(cvvValue, cvvRegEx, cvvInput);
+        };
+        if (userCart === 0) {
+            e.preventDefault()
+            activityHint.classList.remove('valid');
+            activityHint.className = 'not-valid';
+            activityHint.style.display = 'block';
+        } else {
+            activityHint.classList.remove('not-valid');
+            activityHint.className = 'valid';
+            activityHint.style.display = 'none';
+        }
+    });
+}
+
+//Accesibility
+const focusBlur = () => {
+    const focusedActivity = document.querySelectorAll('label > input[type="checkbox"]');
+    for (i = 0; i < focusedActivity.length; i++) {
+        focusedActivity[i].addEventListener('focus', (e) => {
+            e.target.parentElement.className = 'focus';
+        });
+        focusedActivity[i].addEventListener('blur', (e) => {
+            e.target.parentElement.className = '';
+        });
+    };
+}
+
+
 //Call functions
 activitySelection();
 paymentSelector();
+formValidation();
+focusBlur();
