@@ -8,6 +8,7 @@ const shirtColor = document.getElementById('color');
 const shirtColorOptions = shirtColor.children;
 const activities = document.getElementById('activities');
 const creditCard = document.getElementById('credit-card');
+const activityOptions = document.querySelectorAll('label > input[type="checkbox"]');
 let userCart = 0;
 
 //Page load function
@@ -50,7 +51,7 @@ const shirtSelector = () =>{
 
 //Daily Activity Cost
 
-const activitySelector = () => {
+const activityCostSelector = () => {
     activities.addEventListener('change', (e) => {
         let totalCost = document.getElementById('activities-cost');
         let selectionCost = parseInt(e.target.getAttribute('data-cost'));
@@ -63,7 +64,23 @@ const activitySelector = () => {
     });
 }
 
+//Daily Activity Scheduler
 
+const activityScheduleVerification = () => {
+    activities.addEventListener('change', (e) => {
+        for (i = 0; i < activityOptions.length; i++) {
+            let selectionTime = e.target.getAttribute('data-day-and-time');
+            activityOptions[i].disabled = false;
+            if (selectionTime === activityOptions[i].getAttribute('data-day-and-time') && e.target.checked) {
+                activityOptions[i].disabled = true;
+                e.target.disabled = false;
+            } else {
+                activityOptions[i].disabled = false;
+                
+            };
+        };
+    });
+}
 
 //Payment info
 const paymentSelector = () => {
@@ -145,12 +162,11 @@ const formValidation =() => {
 
 //Accesibility
 const focusBlur = () => {
-    const focusedActivity = document.querySelectorAll('label > input[type="checkbox"]');
-    for (i = 0; i < focusedActivity.length; i++) {
-        focusedActivity[i].addEventListener('focus', (e) => {
+    for (i = 0; i < activityOptions.length; i++) {
+        activityOptions[i].addEventListener('focus', (e) => {
             e.target.parentElement.className = 'focus';
         });
-        focusedActivity[i].addEventListener('blur', (e) => {
+        activityOptions[i].addEventListener('blur', (e) => {
             e.target.parentElement.className = '';
         });
     };
@@ -161,7 +177,8 @@ const focusBlur = () => {
 pageLoad();
 jobSelector();
 shirtSelector();
-activitySelector();
+activityCostSelector();
 paymentSelector();
 formValidation();
 focusBlur();
+activityScheduleVerification();
