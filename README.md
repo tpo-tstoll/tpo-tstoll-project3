@@ -1,6 +1,5 @@
 # tpo-tstoll-project3
 
-<!-- 
 Project 3
 
 This is a web form where users are required to enter the following information:
@@ -16,4 +15,4 @@ Finally the user must input payment information. If the user chooses to pay by P
 
 *The name field will dynamically verify as the user is typing to ensure they do not leave the field blank. If the field is blank, they will receive an error message in real time.
 **These required fields will not prompt an error until the form is submitted. The user cannot submit the form until all verification requirements are satisfied.
- -->
+ 
