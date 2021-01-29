@@ -1,6 +1,6 @@
 // Global Variables
-
 const nameInput = document.getElementById('name');
+const emailInput = document.getElementById('email');
 const otherJobInput = document.getElementById('other-job-role');
 const jobRole = document.getElementById('title');
 const shirtDesign = document.getElementById('design');
@@ -8,11 +8,12 @@ const shirtColor = document.getElementById('color');
 const shirtColorOptions = shirtColor.children;
 const activities = document.getElementById('activities');
 const creditCard = document.getElementById('credit-card');
+const cardNumberInput = document.getElementById('cc-num');
 const activityOptions = document.querySelectorAll('label > input[type="checkbox"]');
+const spanHint = document.createElement('span');
 let userCart = 0;
 
-//Page load function
-
+//The pageLoad function ensures all elements on the page display correctly upon loading
 const pageLoad = () => {
     nameInput.focus();
     otherJobInput.style.display = 'none';
@@ -20,7 +21,7 @@ const pageLoad = () => {
 }
 
 
-//Display or hide other job input field based upon selection
+//The jobSelector function displays the other job role input only when 'other' is selected from the roles drop down menu
 const jobSelector = () => {
     jobRole.addEventListener('change', (e) => {
         e.preventDefault();
@@ -32,7 +33,7 @@ const jobSelector = () => {
     });
 }
 
-// Display shirt colors based upon selection
+//The shirtSelector function displays the correct shirt colors based upon the design theme selected
 const shirtSelector = () =>{
     shirtDesign.addEventListener('change', (e) => {
         e.preventDefault();
@@ -49,8 +50,7 @@ const shirtSelector = () =>{
     });
 }
 
-//Daily Activity Cost
-
+//The activityCostSelector function sums the users total cost of registration based upon the users selected activities
 const activityCostSelector = () => {
     activities.addEventListener('change', (e) => {
         let totalCost = document.getElementById('activities-cost');
@@ -64,8 +64,7 @@ const activityCostSelector = () => {
     });
 }
 
-//Daily Activity Scheduler
-
+//The activitySchedularVerification function ensures a user cannot register for activities with conflicting dates and times
 const activityScheduleVerification = () => {
     activities.addEventListener('change', (e) => {
         for (i = 0; i < activityOptions.length; i++) {
@@ -75,14 +74,13 @@ const activityScheduleVerification = () => {
                 activityOptions[i].disabled = true;
                 e.target.disabled = false;
             } else {
-                activityOptions[i].disabled = false;
-                
+                activityOptions[i].disabled = false;  
             };
         };
     });
 }
 
-//Payment info
+//The paymentSelector displays and hides the desired payment option based upon user selection
 const paymentSelector = () => {
     const paymentMethod = document.getElementById('payment');
     const paypal = document.getElementById('paypal');
@@ -109,10 +107,16 @@ const paymentSelector = () => {
 }
 
 
-//Form validation
-const formValidation =() => {
-    const emailInput = document.getElementById('email');
-    const cardNumberInput = document.getElementById('cc-num');
+/* The formSubmitValidation confirms all required fields have been completed correctly when the user submits the form
+    name field - the name field cannot blank, class will change and hint will be displayed if requirement is not met
+    email field - the email field must be correctly formated, class will change and hint will be displayed if requirement is not met
+    activity field - one activity must be selected, class will change and hint will be displayed if requirement is not met
+    credit card field - this field will only display if credit card is selected
+        credit card number - this fied requireds a 13-16 digit number, class will change and conditional hint will be displayed if requirement is not met by being to short or other
+        zip code - this field requires a 5 digit number, class will change and hint will be displayed if requirement is not met
+        cvv - this field requires a 3 digit number, class will change and hint will be displayed if requirement is not met
+The form will not submit until the user has met all requirements*/
+const formSubmitValidation =() => {
     const zipCodeInput = document.getElementById('zip');
     const cvvInput = document.getElementById('cvv');
     const form = document.getElementsByTagName('form');
@@ -138,14 +142,24 @@ const formValidation =() => {
                 input.parentElement.classList.remove('not-valid');
                 input.parentElement.className = 'valid';
                 input.parentElement.lastElementChild.style.display = 'none';
-            }
-        };      
+            };
+        };  
         testForm(nameValue, nameRegEx, nameInput);
         testForm(emailValue, emailRegEx, emailInput);
         if (creditCard.hidden != true) {
             testForm(cardNumberValue, cardNumberRegEx, cardNumberInput);
             testForm(zipCodeValue, zipCodeRegEx, zipCodeInput);
             testForm(cvvValue, cvvRegEx, cvvInput);
+            if (cardNumberValue.length < 13) {
+                e.preventDefault();
+                spanHint.innerHTML = 'Oops! You must enter at least 13 numbers';
+                spanHint.classList.add('hint');
+                cardNumberInput.parentElement.appendChild(spanHint);
+                cardNumberInput.parentElement.lastChild.style.display = 'Block';
+                spanHint.previousElementSibling.style.display = 'none';
+            } else {
+                spanHint.remove();
+            };
         };
         if (userCart === 0) {
             e.preventDefault()
@@ -160,7 +174,22 @@ const formValidation =() => {
     });
 }
 
-//Accesibility
+//The formKeyUpValidation dynamically tests the users input in the name field to provide real time verification the input is formatted correctly
+const formKeyUpValidation =() => {
+    nameInput.addEventListener('keyup', (e) => { 
+        if (nameInput.value != '') {
+            nameInput.parentElement.classList.remove('not-valid');
+            nameInput.parentElement.className = 'valid';
+            nameInput.parentElement.lastElementChild.style.display = 'none';
+        } else {
+            nameInput.parentElement.classList.remove('valid');
+            nameInput.parentElement.className = 'not-valid';
+            nameInput.parentElement.lastElementChild.style.display = 'block';
+        };
+    });
+}
+
+//The focusBlur function adds the focus class and blur class to the correct elements within the registration section
 const focusBlur = () => {
     for (i = 0; i < activityOptions.length; i++) {
         activityOptions[i].addEventListener('focus', (e) => {
@@ -179,6 +208,8 @@ jobSelector();
 shirtSelector();
 activityCostSelector();
 paymentSelector();
-formValidation();
+formSubmitValidation();
 focusBlur();
 activityScheduleVerification();
+formKeyUpValidation();
+createCardHint();
