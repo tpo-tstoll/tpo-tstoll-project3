@@ -138,6 +138,7 @@ const formSubmitValidation =() => {
                 input.parentElement.classList.remove('valid');
                 input.parentElement.className = 'not-valid';
                 input.parentElement.lastElementChild.style.display = 'block';
+                spanHint.remove();
             } else {
                 input.parentElement.classList.remove('not-valid');
                 input.parentElement.className = 'valid';
@@ -207,9 +208,8 @@ pageLoad();
 jobSelector();
 shirtSelector();
 activityCostSelector();
+activityScheduleVerification();
 paymentSelector();
 formSubmitValidation();
-focusBlur();
-activityScheduleVerification();
 formKeyUpValidation();
-createCardHint();
+focusBlur();
