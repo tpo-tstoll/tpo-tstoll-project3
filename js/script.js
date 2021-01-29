@@ -2,51 +2,55 @@
 
 const nameInput = document.getElementById('name');
 const otherJobInput = document.getElementById('other-job-role');
-const jobSelector = document.getElementById('title');
-const shirtDesignSelector = document.getElementById('design');
-const shirtColorSelector = document.getElementById('color');
-const shirtColorOptions = shirtColorSelector.children;
+const jobRole = document.getElementById('title');
+const shirtDesign = document.getElementById('design');
+const shirtColor = document.getElementById('color');
+const shirtColorOptions = shirtColor.children;
 const activities = document.getElementById('activities');
-
-//Set focus to name input 
-nameInput.focus();
-
-//Hide other job role field
-otherJobInput.style.display = 'none';
-
-//Display or hide other job input field based upon selection
-jobSelector.addEventListener('change', (e) => {
-    e.preventDefault();
-    if (e.target.value === 'other') {
-        otherJobInput.style.display = '';
-    } else {
-        otherJobInput.style.display = 'none';
-    };
-});
-
-//Disable color selector
-shirtColorSelector.disabled = true;
-
-
-// Display shirt colors based upon selection
-shirtDesignSelector.addEventListener('change', (e) => {
-    e.preventDefault();
-    shirtColorSelector.disabled = false;
-    for (let i = 0; i < shirtColorOptions.length; i++) {
-        if(shirtColorOptions[i].getAttribute('data-theme') !== e.target.value){
-            shirtColorOptions[i].removeAttribute('selected');
-            shirtColorOptions[i].hidden= true;
-        } else {
-            shirtColorOptions[i].setAttribute('selected', true);
-            shirtColorOptions[i].hidden = false;
-        }
-    }; 
-})
-
-//Daily Activity Cost
+const creditCard = document.getElementById('credit-card');
 let userCart = 0;
 
-const activitySelection = () => {
+//Page load function
+
+const pageLoad = () => {
+    nameInput.focus();
+    otherJobInput.style.display = 'none';
+    shirtColor.disabled = true;
+}
+
+
+//Display or hide other job input field based upon selection
+const jobSelector = () => {
+    jobRole.addEventListener('change', (e) => {
+        e.preventDefault();
+        if (e.target.value === 'other') {
+            otherJobInput.style.display = '';
+        } else {
+            otherJobInput.style.display = 'none';
+        };
+    });
+}
+
+// Display shirt colors based upon selection
+const shirtSelector = () =>{
+    shirtDesign.addEventListener('change', (e) => {
+        e.preventDefault();
+        shirtColor.disabled = false;
+        for (let i = 0; i < shirtColorOptions.length; i++) {
+            if(shirtColorOptions[i].getAttribute('data-theme') !== e.target.value){
+                shirtColorOptions[i].removeAttribute('selected');
+                shirtColorOptions[i].hidden= true;
+            } else {
+                shirtColorOptions[i].setAttribute('selected', true);
+                shirtColorOptions[i].hidden = false;
+            }
+        }; 
+    });
+}
+
+//Daily Activity Cost
+
+const activitySelector = () => {
     activities.addEventListener('change', (e) => {
         let totalCost = document.getElementById('activities-cost');
         let selectionCost = parseInt(e.target.getAttribute('data-cost'));
@@ -56,10 +60,10 @@ const activitySelection = () => {
             userCart -= selectionCost;
         };
         totalCost.innerHTML = `Total: $${userCart}`;
-    })
+    });
 }
 
-const creditCard = document.getElementById('credit-card');
+
 
 //Payment info
 const paymentSelector = () => {
@@ -84,12 +88,8 @@ const paymentSelector = () => {
             creditCard.hidden = false;
             paypal.hidden = true;
         };
-    })
+    });
 }
-
-
-//Test validation function
-
 
 
 //Form validation
@@ -101,6 +101,16 @@ const formValidation =() => {
     const form = document.getElementsByTagName('form');
     const activityHint = document.getElementById('activities-hint');
     form[0].addEventListener('submit', (e) => {
+        let nameValue = nameInput.value;
+        const nameRegEx = /[(.|\s)*\S(.|\s)]/.test(nameValue); 
+        let emailValue = emailInput.value;
+        const emailRegEx = /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailValue);
+        let cardNumberValue = cardNumberInput.value;
+        const cardNumberRegEx = /^[0-9]{13}(?:[0-9]{3})?$/.test(cardNumberValue);
+        let zipCodeValue = zipCodeInput.value;
+        const zipCodeRegEx = /^[0-9]{5}$/.test(zipCodeValue);
+        let cvvValue = cvvInput.value;
+        const cvvRegEx = /^[0-9]{3}$/.test(cvvValue);
         const testForm = (value, test, input) => {
             if (test != true) {
                 e.preventDefault();
@@ -112,17 +122,7 @@ const formValidation =() => {
                 input.parentElement.className = 'valid';
                 input.parentElement.lastElementChild.style.display = 'none';
             }
-        };
-        let nameValue = nameInput.value;
-        const nameRegEx = /[(.|\s)*\S(.|\s)]/.test(nameValue); 
-        let emailValue = emailInput.value;
-        const emailRegEx = /^[^@]+@[^@.]+\.[a-z]+$/i.test(emailValue);
-        let cardNumberValue = cardNumberInput.value;
-        const cardNumberRegEx = /^[0-9]{13}(?:[0-9]{3})?$/.test(cardNumberValue);
-        let zipCodeValue = zipCodeInput.value;
-        const zipCodeRegEx = /^[0-9]{5}$/.test(zipCodeValue);
-        let cvvValue = cvvInput.value;
-        const cvvRegEx = /^[0-9]{3}$/.test(cvvValue);
+        };      
         testForm(nameValue, nameRegEx, nameInput);
         testForm(emailValue, emailRegEx, emailInput);
         if (creditCard.hidden != true) {
@@ -158,7 +158,10 @@ const focusBlur = () => {
 
 
 //Call functions
-activitySelection();
+pageLoad();
+jobSelector();
+shirtSelector();
+activitySelector();
 paymentSelector();
 formValidation();
 focusBlur();
