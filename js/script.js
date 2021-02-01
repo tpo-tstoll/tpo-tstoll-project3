@@ -111,10 +111,10 @@ const paymentSelector = () => {
 
 /* The formSubmitValidation confirms all required fields have been completed correctly when the user submits the form
     name field - the name field cannot blank, class will change and hint will be displayed if requirement is not met
-    email field - the email field must be correctly formated, class will change and hint will be displayed if requirement is not met
+    email field - the email field must be correctly formated, class will change and hint will be displayed based upon the requirements being met
     activity field - one activity must be selected, class will change and hint will be displayed if requirement is not met
     credit card field - this field will only display if credit card is selected
-        credit card number - this fied requireds a 13-16 digit number, class will change and conditional hint will be displayed if requirement is not met by being to short or other
+        credit card number - this fied requireds a 13-16 digit number, class will change and hint will be displayed if requirement is not met
         zip code - this field requires a 5 digit number, class will change and hint will be displayed if requirement is not met
         cvv - this field requires a 3 digit number, class will change and hint will be displayed if requirement is not met
 The form will not submit until the user has met all requirements*/
@@ -140,7 +140,6 @@ const formSubmitValidation =() => {
                 input.parentElement.classList.remove('valid');
                 input.parentElement.className = 'not-valid';
                 input.parentElement.lastElementChild.style.display = 'block';
-                spanHint.remove();
             } else {
                 input.parentElement.classList.remove('not-valid');
                 input.parentElement.className = 'valid';
@@ -149,20 +148,35 @@ const formSubmitValidation =() => {
         };  
         testForm(nameValue, nameRegEx, nameInput);
         testForm(emailValue, emailRegEx, emailInput);
+        if (emailValue.includes('@') != true && emailValue.includes('.com') != true) {
+            e.preventDefault();
+            spanHint.innerHTML = 'Oops! Your email must contain an "@" and ".com"';
+            spanHint.classList.add('hint');
+            emailInput.parentElement.appendChild(spanHint);
+            emailInput.parentElement.lastChild.style.display = 'Block';
+            spanHint.previousElementSibling.style.display = 'none';
+        } else if (emailValue.includes('@') != true) {
+            e.preventDefault();
+            spanHint.innerHTML = 'Oops! Your email must contain an "@"';
+            spanHint.classList.add('hint');
+            emailInput.parentElement.appendChild(spanHint);
+            emailInput.parentElement.lastChild.style.display = 'Block';
+            spanHint.previousElementSibling.style.display = 'none';
+        } else if (emailValue.includes('.com') != true) {
+            e.preventDefault();
+            spanHint.innerHTML = 'Oops! Your email must contain an ".com"';
+            spanHint.classList.add('hint');
+            emailInput.parentElement.appendChild(spanHint);
+            emailInput.parentElement.lastChild.style.display = 'Block';
+            spanHint.previousElementSibling.style.display = 'none';
+        } else {
+            spanHint.remove();
+            testForm(emailValue, emailRegEx, emailInput);
+        };
         if (creditCard.hidden != true) {
             testForm(cardNumberValue, cardNumberRegEx, cardNumberInput);
             testForm(zipCodeValue, zipCodeRegEx, zipCodeInput);
             testForm(cvvValue, cvvRegEx, cvvInput);
-            if (cardNumberValue.length < 13) {
-                e.preventDefault();
-                spanHint.innerHTML = 'Oops! You must enter at least 13 numbers';
-                spanHint.classList.add('hint');
-                cardNumberInput.parentElement.appendChild(spanHint);
-                cardNumberInput.parentElement.lastChild.style.display = 'Block';
-                spanHint.previousElementSibling.style.display = 'none';
-            } else {
-                spanHint.remove();
-            };
         };
         if (userCart === 0) {
             e.preventDefault()
@@ -177,8 +191,8 @@ const formSubmitValidation =() => {
     });
 }
 
-//The formKeyUpValidation dynamically tests the users input in the name field to provide real time verification the input is formatted correctly
-const formKeyUpValidation =() => {
+//The nameKeyUpValidation dynamically tests the users input in the name field to provide real time verification the input is formatted correctly
+const nameKeyUpValidation =() => {
     nameInput.addEventListener('keyup', (e) => { 
     const nameRegEx = /[^\s]/.test(nameInput.value); 
         if (nameRegEx) {
@@ -214,5 +228,5 @@ activityCostSelector();
 activityScheduleVerification();
 paymentSelector();
 formSubmitValidation();
-formKeyUpValidation();
+nameKeyUpValidation();
 focusBlur();
